@@ -1,0 +1,559 @@
+/* Algemeen */
+* {
+    /* Zorgt ervoor dat de padding en border bij de breedte horen */
+    box-sizing: border-box;
+    margin: 0;
+}
+
+/* Custom fonts */
+@font-face {
+    font-family: 'Bariol-Bold';
+    src: url('../fonts/Bariol_Bold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Bariol-Regular';
+    src: url('../fonts/Bariol_Regular.otf') format('opentype');
+}
+
+/* Algemeen */
+html {
+    font-family: 'Bariol-Regular', Verdana, Geneva, Tahoma, sans-serif;
+
+    /* Scrollen in html element-gaat smooth */
+    @media (prefers-reduced-motion: no-preference) {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Custom properties */
+:root {
+    /* Custom colors */
+    --dark-nav-bar-bg-color: rgb(23 47 59);
+    --text-color-on-light-bg: rgb(144 161 170);
+    --dark-text-color-on-light-bg: rgb(34 68 85);
+    --highlighted-areas-bg-color: rgb(233 236 238);
+    --lightest-color: rgb(255 255 255);
+    --accent-color-on-light-bg: rgb(0 229 61);
+    --accent-color-on-dark-bg: rgb(0 255 68);
+    --alert-accent-color: rgb(255 42 52);
+    --icon-color-on-light-bg: rgb(78 105 119);
+
+    /* Font sizes */
+    --font-size-l: 2.625rem;
+    --font-size-m: clamp(1.7em, 6dvw, 2.1em);
+    --font-size-s: 1.875rem;
+    --font-size-xs: clamp(1em, 4dvw, 1.2em);
+
+    --icon-height: clamp(1.5em, 6dvw, 2em);
+    --container-heights: clamp(2em, 11vh, 5em);
+}
+
+
+header,
+footer {
+    min-height: var(--container-heights);
+    background-color: var(--dark-nav-bar-bg-color);
+    color: var(--lightest-color);
+
+    h1 {
+        font-size: var(--font-size-m);
+        text-align: center;
+    }
+
+    svg {
+        fill: var(--lightest-color);
+        height: var(--icon-height);
+    }
+
+    button {
+        background: none;
+        border: none;
+        display: inline-flex;
+        justify-self: end;
+        padding: 0;
+    }
+
+    a,
+    button {
+
+        &:hover,
+        &:focus {
+            transition: 0.2s;
+            scale: 1.1;
+            cursor: pointer;
+        }
+
+        &:active {
+            scale: 1;
+        }
+    }
+}
+
+header {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0 5dvw;
+}
+
+/* Header with 2 items */
+.items-2-top-nav-bar {
+
+    h1,
+    details {
+        grid-column: 2;
+    }
+}
+
+/* Collapsible list in header for different snappmaps in same group */
+.header-collapsible-list {
+    cursor: pointer;
+    z-index: 2;
+
+    h1 {
+        margin: 0;
+    }
+
+    /* When details is open, style the dropdown */
+    &[open] ul {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        background: var(--dark-nav-bar-bg-color);
+    }
+
+    summary {
+        list-style: none;
+        cursor: pointer;
+
+        &:hover {
+            transition: 0.3s;
+            scale: 1.05;
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        font-size: var(--font-size-m);
+        font-weight: 600;
+
+        li {
+            display: grid;
+            justify-content: center;
+            min-height: var(--container-heights);
+            border-top: 1px solid var(--lightest-color);
+
+            a {
+                align-self: center;
+                display: block;
+                color: var(--lightest-color);
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+/* Like, dislike and save form in header for 1 snapp */
+.like-dislike-save-form {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    gap: 2em;
+
+    label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.2em;
+
+        button:hover {
+            scale: 1.2;
+        }
+
+        svg {
+            height: clamp(1.2em, 4dvw, 1.8em);
+        }
+    }
+}
+
+footer {
+    display: grid;
+    align-items: center;
+    position: sticky;
+    width: 100%;
+    bottom: 0;
+    margin-top: auto;
+    z-index: 1;
+
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        list-style-type: '';
+        padding: 0;
+
+        li a {
+            display: inline-block;
+
+            &:hover {
+                transition: 0.2s;
+                scale: 1.1;
+            }
+
+            &:active {
+                scale: 1;
+            }
+        }
+    }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+/* Standard size images */
+img {
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+/* Active-state for footer and 'Add your snapp!' */
+.active {
+    color: var(--accent-color-on-light-bg);
+
+    svg {
+        fill: var(--accent-color-on-dark-bg);
+    }
+}
+
+
+/* List overview groups/snappmaps - groups.liquid and snappmaps.liquid */
+.list {
+    position: relative;
+    display: grid;
+    align-content: center;
+    list-style: '';
+    padding: 0 5dvw;
+    border-bottom: 1px solid black;
+    height: var(--container-heights);
+
+    li:nth-of-type(2),
+    li:nth-of-type(3) {
+        font-size: var(--font-size-xs);
+    }
+
+    .members-count {
+        color: var(--text-color-on-light-bg);
+    }
+
+    .buttons-in-list {
+        position: absolute;
+        right: 0;
+        align-self: center;
+
+        ul {
+            display: flex;
+            padding: 0 5dvw 0 0;
+            list-style: '';
+            column-gap: 0.5em;
+
+            button {
+                display: inline-flex;
+                padding: 0;
+                background: none;
+                border: none;
+                cursor: pointer;
+                fill: var(--icon-color-on-light-bg);
+                vertical-align: center;
+
+                &:hover,
+                &:focus {
+                    transition: 0.2s;
+                    scale: 1.1;
+                }
+
+                &:active {
+                    scale: 1;
+                }
+            }
+        }
+    }
+}
+
+/* Link in overview groups/snappmaps list - groups.liquid and snappmaps.liquid */
+.link-in-list {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--dark-text-color-on-light-bg);
+    font-size: var(--font-size-m);
+
+    &:hover,
+    &:focus {
+        cursor: pointer;
+        scale: 1.1;
+        transition: 0.2s;
+    }
+
+    &:active {
+        scale: 1;
+    }
+}
+
+/* Top section in overview of 1 snappmap with 'add snapp' link - one-snappmap.liquid */
+.section-snappmap-add-snap {
+    display: grid;
+
+    p {
+        justify-self: center;
+    }
+
+    p:nth-of-type(1) {
+        font-size: 2em;
+        color: var(--dark-text-color-on-light-bg);
+        letter-spacing: 0.1em;
+    }
+
+    p:nth-of-type(2) {
+        font-size: var(--font-size-xs);
+        padding-bottom: 1.5em;
+    }
+}
+
+/* Groupname in overview of 1 snappmap or 1 snapp - one-snappmap.liquid and one-snapp.liquid */
+.group-name-in-snappmap-or-snapp {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0 5dvw;
+    min-height: var(--container-heights);
+
+    font-size: var(--font-size-m);
+    color: var(--text-color-on-light-bg);
+
+    svg {
+        fill: var(--text-color-on-light-bg);
+        height: clamp(0.9em, 4dvw, 1.1em);
+        translate: 0 -4px;
+    }
+}
+
+/* Add snapp button/link - one-snappmap.liquid and capture-snapp.liquid*/
+.add-snapp-link-button {
+    justify-self: center;
+    width: fit-content;
+    align-self: center;
+    display: inline-block;
+    background-color: var(--accent-color-on-light-bg);
+    padding: 2.2em;
+    border-radius: 50%;
+
+    svg {
+        fill: white;
+        height: 2.2em;
+    }
+
+    &:hover,
+    &:focus {
+        transition: 0.2s;
+        scale: 1.05;
+    }
+
+    &:active {
+        scale: 1;
+    }
+}
+
+/* Grid with snapps */
+.snapp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5vw;
+    list-style: '';
+    padding: 0;
+
+    li {
+        display: flex;
+        aspect-ratio: 1/1;
+    }
+
+    img {
+        width: 100%;
+    }
+}
+
+
+.one-snapp-page {
+    img {
+        width: 100%;
+    }
+
+
+    div {
+        padding: 0.1em 0.2em 1em;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.2em;
+        font-size: var(--font-size-xs);
+
+        a {
+            padding: 1em 1.5em;
+            border-radius: 2em;
+            background-color: var(--highlighted-areas-bg-color);
+            color: var(--dark-text-color-on-light-bg);
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                transition: 0.2s;
+                scale: 1.1;
+            }
+        }
+
+        p {
+            color: var(--text-color-on-light-bg);
+            text-transform: capitalize;
+        }
+    }
+
+}
+
+
+/* Page to capture pictures - capture-snapp.liquid*/
+.capture-snap-page {
+    padding-bottom: 2em;
+
+    img {
+        width: 100%;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--dark-text-color-on-light-bg);
+        font-size: var(--font-size-m);
+        padding: 0.5em;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: 1fr max-content 1fr;
+        text-align: center;
+        align-items: end;
+        padding: 0.5em;
+
+        /* Label and input to make a picture in snappmap */
+        .upload-snap {
+            cursor: pointer;
+            grid-column: 2;
+
+            &:focus-within {
+                outline: 2px solid darkblue;
+            }
+
+            input[id="upload-snapp"] {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                clip-path: inset(50%);
+                border: 0;
+            }
+
+            svg {
+                fill: white;
+            }
+        }
+
+        /* Submit button */
+        button {
+            cursor: pointer;
+            justify-self: end;
+            width: fit-content;
+            height: fit-content;
+            padding: 1em 1.5em;
+            border-radius: 2em;
+            border: none;
+            background: none;
+            fill: var(--dark-text-color-on-light-bg);
+
+            &:hover,
+            &:focus {
+                transition: 0.2s;
+                scale: 1.1;
+            }
+        }
+
+        /* Show submit button when a picture has been made */
+        .display {
+            display: inline-block;
+        }
+    }
+}
+
+/* Succes and error state - one-snappmap.liquid and capture-snapp.liquid */
+.status-succes-or-error {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    background-color: var(--lightest-color);
+    padding: clamp(2em, 6vw, 4em) 1.5em;
+    width: clamp(14em, 60dvw, 25em);
+    text-align: center;
+
+    box-shadow: 0px 1px 10px rgb(0, 0, 0);
+
+    P {
+        font-size: var(--font-size-xs);
+    }
+
+    a:nth-of-type(1) {
+        margin-top: 1em;
+        display: inline-block;
+        padding: 1em;
+        border-radius: 100%;
+        background-color: var(--accent-color-on-light-bg);
+        width: fit-content;
+        color: var(--lightest-color);
+        font-family: 'Bariol-Bold', Verdana, Geneva, Tahoma, sans-serif;
+        text-decoration: none;
+    }
+
+    a:nth-of-type(2) {
+        display: block;
+        padding-top: 0.4em;
+        color: var(--text-color-on-light-bg);
+        text-decoration: none;
+    }
+
+    a {
+
+        &:hover,
+        &:focus {
+            transition: 0.2s;
+            scale: 1.1;
+        }
+
+        &:active {
+            scale: 1;
+        }
+    }
+
+
+}
