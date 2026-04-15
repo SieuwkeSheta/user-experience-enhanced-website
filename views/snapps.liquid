@@ -1,0 +1,21 @@
+{% render 'partials/head.liquid',
+  title: 'Snapps',
+  MultipleSnapps: MultipleSnapps,
+  path: path,
+  pathLocation: pathLocation
+%}
+
+
+{% assign sorted_snapps = MultipleSnapps | sort: "date_created" | reverse %}
+
+<ul class="snapp-grid">
+  {% for OneSnapp in sorted_snapps %}
+    <li>
+      <a href="/snapps/{{ OneSnapp.uuid }}">
+        <img src="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=300" alt="" width="150">
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+{% render 'partials/foot.liquid', MultiplesnappsList: true %}

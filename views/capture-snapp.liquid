@@ -1,0 +1,45 @@
+{% for OneSnappMappName in OneSnappMappNames %}
+  {% render 'partials/head.liquid',
+    title: 'Capture Snapp',
+    captureSnapp: true,
+    OneSnappMappName: OneSnappMappName.slug
+  %}
+{% endfor %}
+
+<section class="capture-snap-page">
+  <img id="display-image" src="/assets/grey-background-placeholder.jpg" width="40%">
+
+  {% for OneSnappMappName in OneSnappMappNames %}
+    <h2>{{ OneSnappMappName.name }}</h2>
+
+    <form method="POST" action="/snappmaps/{{ OneSnappMappName.slug}}" enctype="multipart/form-data">
+      <label for="upload-snapp" class="upload-snap add-snapp-link-button">
+        <svg viewBox="0 0 43 36" xmlns="http://www.w3.org/2000/svg" height="30">
+            <title>Capture snapp</title>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 15.05C18.4178 15.05 15.91 17.5578 15.91 20.64C15.91 23.7222 18.4178 26.23 21.5 26.23C24.5823 26.23 27.09 23.7222 27.09 20.64C27.09 17.5578 24.5823 15.05 21.5 15.05ZM30.96 5.59C30.96 2.5026 28.4574 0 25.37 0H17.63C14.5426 0 12.04 2.5026 12.04 5.59H5.59C2.5026 5.59 0 8.0926 0 11.18V30.1C0 33.1874 2.5026 35.69 5.59 35.69H37.41C40.4974 35.69 43 33.1874 43 30.1V11.18C43 8.0926 40.4974 5.59 37.41 5.59H30.96ZM21.5 30.53C16.0463 30.53 11.61 26.0933 11.61 20.64C11.61 15.1868 16.0463 10.75 21.5 10.75C26.9537 10.75 31.39 15.1868 31.39 20.64C31.39 26.0933 26.9537 30.53 21.5 30.53Z" fill=""/>
+        </svg>
+        <input id="upload-snapp" type="file" name="file" capture="environment" required accept="image/*">
+
+        {% comment %} Hidden input to send extra data in server.js{% endcomment %}
+        <input hidden name="uuid" value="{{ OneSnappMappName.uuid}}">
+      </label>
+
+      <button type="submit" id="send-button" hidden>
+        <svg fill="" xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 121 109">
+          <title>Add snapp</title>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M5.10487 0.313129L117.683 50.3692C118.377 50.6026 118.983 51.04 119.424 51.6241C119.864 52.2083 120.118 52.9119 120.152 53.6427C120.185 54.3736 119.997 55.0975 119.612 55.7197C119.227 56.3418 118.664 56.8331 117.994 57.1292L5.13316 107.765C4.48494 108.057 3.76518 108.153 3.06322 108.039C2.36127 107.926 1.70804 107.609 1.18462 107.128C0.6612 106.647 0.290636 106.022 0.118932 105.332C-0.0527713 104.642 -0.0180518 103.917 0.218774 103.247L13.6184 64.773L74.1185 54.0391L13.7599 43.3052L0.204623 4.83154C-0.0299874 4.16271 -0.0636576 3.43982 0.107765 2.75207C0.279188 2.06433 0.648204 1.44181 1.16928 0.961337C1.69036 0.480861 2.34071 0.163447 3.04007 0.0482588C3.73944 -0.0669297 4.45723 0.0251477 5.10487 0.313129Z" fill=""/>
+        </svg>
+      </button>
+    </form>
+
+    {% comment %} Alert if snapp didn't add and has an error {% endcomment %}
+    {% if status == 'error' %}
+      <div class="status-succes-or-error">
+        <p>Error!</p>
+        <p>Try again to add your snapp.</p>
+        <a href="/snappmaps/{{ OneSnappMappName.slug }}/capture">OK</a>
+        <a href="/snappmaps/{{ OneSnappMappName.slug }}">Maybe later</a>
+      </div>
+    {% endif %}
+  {% endfor %}
+</section>

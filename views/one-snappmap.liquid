@@ -1,0 +1,58 @@
+{% for OneSnappMappInfo in OneSnappMappInfos %}
+    {% render 'partials/head.liquid', title: OneSnappMappInfo.name, OneSnappMap: true, OneSnappMappInfo: OneSnappMappInfo %}
+{% endfor %}
+
+<section class="section-snappmap-add-snap">
+{% for OneSnappMappInfo in OneSnappMappInfos %}
+  {% comment %} Make variable for the date of 'today' {% endcomment %}
+  {% assign today_date = 'now' | date: '%Y%m%d' %}
+
+  {% comment %} Make variable of the end-date of the 'snappmap' {% endcomment %}
+  {% assign target_date = OneSnappMappInfo.time_end | date: '%Y%m%d' %}
+
+  {% for groups in OneSnappMappInfo.groups %}
+    <h2 class="group-name-in-snappmap-or-snapp">
+        <svg viewBox="0 0 40 36" xmlns="http://www.w3.org/2000/svg" height="30">
+          <title>Go to your groups</title>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M36.455 17.2464C36.455 20.4113 33.8721 22.9873 30.6992 22.9873C27.5268 22.9873 24.9531 20.4113 24.9531 17.2464C24.9531 14.0682 27.5268 11.4922 30.6992 11.4922C33.8653 11.4922 36.455 14.0728 36.455 17.2464ZM13.3312 0C8.64634 0 4.82779 3.81168 4.82779 8.50052C4.82779 13.1888 8.64233 17.0073 13.3312 17.0073C18.0217 17.0073 21.8368 13.1888 21.8368 8.50052C21.8397 3.81168 18.0212 0 13.3312 0ZM39.8847 34.6843C39.8847 29.4545 35.7557 25.2099 30.6906 25.2099C29.7871 25.2099 28.9243 25.3878 28.1032 25.6394C29.185 27.8083 29.8472 30.227 29.8472 32.8287V36H39.8853V34.6843H39.8847ZM0 36H26.6601V32.9848C26.6601 25.4221 20.6761 19.2694 13.3312 19.2694C5.97427 19.2694 0.00057181 25.4227 0.00057181 32.9848V36H0Z" fill=""/>
+        </svg>
+        {{ groups.snappthis_group_uuid.name }}
+    </h2>
+  {% endfor %}
+
+  {% comment %} If the end-date of the 'snapmap' has not yet ended before the date of 'today', add a text with 'Add your snapp!' {% endcomment %}
+  {% if target_date > today_date %}
+    <a href="/snappmaps/{{ OneSnappMappInfo.slug}}/capture" class="add-snapp-link-button">
+      <svg viewBox="0 0 43 36" xmlns="http://www.w3.org/2000/svg" height="30">
+        <title>Capture snapp</title>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 15.05C18.4178 15.05 15.91 17.5578 15.91 20.64C15.91 23.7222 18.4178 26.23 21.5 26.23C24.5823 26.23 27.09 23.7222 27.09 20.64C27.09 17.5578 24.5823 15.05 21.5 15.05ZM30.96 5.59C30.96 2.5026 28.4574 0 25.37 0H17.63C14.5426 0 12.04 2.5026 12.04 5.59H5.59C2.5026 5.59 0 8.0926 0 11.18V30.1C0 33.1874 2.5026 35.69 5.59 35.69H37.41C40.4974 35.69 43 33.1874 43 30.1V11.18C43 8.0926 40.4974 5.59 37.41 5.59H30.96ZM21.5 30.53C16.0463 30.53 11.61 26.0933 11.61 20.64C11.61 15.1868 16.0463 10.75 21.5 10.75C26.9537 10.75 31.39 15.1868 31.39 20.64C31.39 26.0933 26.9537 30.53 21.5 30.53Z" fill=""/>
+      </svg>
+    </a>
+
+    <p>01:30</p>
+    <p class="active"><strong>Add your snapp!</strong></p>
+  {% endif %}
+  </section>
+
+  {% assign sorted_snapps = OneSnappMappInfo.snaps | sort: "date_created" | reverse %}
+
+  <ul class="snapp-grid">
+    {% for snapps in sorted_snapps %}
+        <li>
+          <a href="/snapps/{{ snapps.uuid }}">
+            <img src="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=500" alt="" width="200">
+          </a>
+        </li>
+    {% endfor %}
+  </ul>
+
+  {% comment %} Alert if snapp has been added succesfully {% endcomment %}
+  {% if status == 'success' %}
+    <div class="status-succes-or-error">
+      <p>Your snapp has been added succesfully!</p>
+      <a href="/snappmaps/{{ OneSnappMappInfo.slug}}">OK</a>
+    </div>
+  {% endif %}
+{% endfor %}
+
+{% render 'partials/foot.liquid', OneSnappMapList: true %}
