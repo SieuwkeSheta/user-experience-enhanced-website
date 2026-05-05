@@ -184,6 +184,28 @@ header {
             height: clamp(1.2em, 4dvw, 1.8em);
         }
     }
+
+    .like-active {
+        color: var(--accent-color-on-dark-bg);
+        svg {
+            fill: var(--accent-color-on-dark-bg);
+        }
+    }
+
+    .tomato-active {
+        color: var(--alert-accent-color);
+
+        svg {
+            fill: var(--alert-accent-color);
+        }
+    }
+
+    .star-active {
+        color: var(--star-icon-color);
+        svg {
+            fill: var(--star-icon-color);
+        }
+    }
 }
 
 footer {
