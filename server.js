@@ -203,6 +203,28 @@ app.get('/snapps/:uuid', async function (request, response) {
   const StarCountApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.name,snapmap.groups.snappthis_group_uuid.name,author.*,actions.action&deep[actions][_filter][action][_eq]=star&filter[uuid]=' + request.params.uuid)
   const StarCountApiResponseJSON = await StarCountApiResponse.json()
 
+
+  // Voor het maken van een active state van de actions 'like', 'tomaat' en 'ster'
+  // Persoon die de like, tomaat of ster geeft
+  const userUuid = "467a4442-69e4-44ae-829a-b95e25c4dd7b"
+
+  // Check of er een actie, 'like', 'tomaat' of 'ster', is uitgevoerd op de snapp met die specfieke persoon
+  const userActionResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[snap][_eq]=${request.params.uuid}&filter[user][_eq]=${userUuid}`)
+  const userActionData = await userActionResponse.json()
+
+
+  // Check of er data zit in 'userActionData.data', zo ja gebruik de data. Zo niet, gebruik dan een lege lijst '[]'
+  const actions = userActionData.data || []
+
+  // Check of er een actie 'like' is uitgevoerd
+  const hasLike = actions.some(a => a.action === "like")
+
+  // Check of er een actie 'tomaat' is uitgevoerd
+  const hasTomato = actions.some(a => a.action === "tomato")
+
+  // Check of er een actie 'ster' is uitgevoerd
+  const hasStar = actions.some(a => a.action === "star")
+
   // Geef hier eventueel data aan mee
   response.render('one-snapp.liquid', {
     OneSnapps: OneSnappApiResponseJSON.data,
@@ -221,10 +243,6 @@ app.get('/snapps/:uuid', async function (request, response) {
 
   res.redirect(303, `/snappmaps/${snappMappSlug}`)
 })
-
-
-
-
 
 
 
