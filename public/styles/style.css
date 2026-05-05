@@ -208,6 +208,55 @@ header {
     }
 }
 
+/* pop-up for like, tomato and star when clicked */
+.action-popup {
+    position: fixed;
+    top: clamp(2em, 11vh, 5em);
+    display: grid;
+    grid-template-columns: max-content 2fr;
+    padding: 1em 5dvw;
+    column-gap: 0.5em;
+    width: 100%;
+    z-index: 1;
+
+    opacity: 0;
+    background-color: var(--lightest-color);
+    animation-name: --fade-popup;
+    animation-duration: 5s;
+    animation-timing-function: ease-in-out;
+
+
+    p {
+        grid-column: 2;
+    }
+}
+
+@keyframes --fade-popup {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* colors in pop-up */
+.heart-color svg {
+    fill: var(--accent-color-on-dark-bg);
+}
+
+.tomato-color svg {
+    fill: var(--alert-accent-color);
+}
+
+.star-color svg {
+    fill: var(--star-icon-color);
+}
+
+
 footer {
     display: grid;
     align-items: center;
@@ -417,51 +466,6 @@ img {
 }
 
 
-.action-popup {
-    position: fixed;
-    top: clamp(2em, 11vh, 5em);
-    display: grid;
-    grid-template-columns: max-content 2fr;
-    padding: 1em 5dvw;
-    column-gap: 0.5em;
-    width: 100%;
-    z-index: 1;
-
-    opacity: 0;
-    background-color: var(--lightest-color);
-    animation-name: --fade-popup;
-    animation-duration: 5s;
-    animation-timing-function: ease-in-out;
-
-
-    p {
-        grid-column: 2;
-    }
-}
-
-@keyframes --fade-popup {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.heart-color svg {
-    fill: var(--accent-color-on-dark-bg);
-}
-
-.tomato-color svg {
-    fill: var(--alert-accent-color);
-}
-
-.star-color svg {
-    fill: var(--star-icon-color);
-}
 
 
 
