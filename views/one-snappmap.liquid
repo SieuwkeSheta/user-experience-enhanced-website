@@ -41,6 +41,10 @@
           <a href="/snapps/{{ snapps.uuid }}">
             <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=500&" alt="" width="200">
           </a>
+          {% comment %} <form method="POST" action="/snapps/delete/{{ snapps.uuid }}">
+            <input type="hidden" name="slug" value="{{ OneSnappMappInfo.slug}}">
+            <button type="submit">Delete</button>
+          </form> {% endcomment %}
         </li>
     {% endfor %}
   </ul>

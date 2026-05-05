@@ -346,8 +346,14 @@ app.post('/snapps/:uuid/action', async function (request, response) {
 
 
 
+// Delete snapps
+app.post("/snapps/delete/:uuid", async (req, res) => {
 
+  const snappUuid = req.params.uuid
+  const snappMappSlug = req.body.slug
 
+  await fetch(`https://fdnd-agency.directus.app/items/snappthis_snap/${snappUuid}`, {
+    method: "DELETE",
   })
 
   res.redirect(303, `/snappmaps/${snappMappSlug}`)
