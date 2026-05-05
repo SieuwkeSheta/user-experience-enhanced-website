@@ -38,6 +38,7 @@ html {
     --accent-color-on-dark-bg: rgb(0 255 68);
     --alert-accent-color: rgb(255 42 52);
     --icon-color-on-light-bg: rgb(78 105 119);
+    --star-icon-color: rgb(248 231 28);
 
     /* Font sizes */
     --font-size-l: 2.625rem;
