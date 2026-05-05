@@ -24,7 +24,7 @@
     <img src="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=500" alt="" width="200">
 
     <div>
-      <a href="/snappmaps/{{OneSnapp.snapmap.name}}">{{ OneSnapp.snapmap.name }}</a>
+      <a href="/snappmaps/{{OneSnapp.snapmap.slug}}">{{ OneSnapp.snapmap.slug }}</a>
       <a href="#">{{ OneSnapp.author.name }}</a>
       <a href="/snapps/location/{{ OneSnapp.location }}">{{ OneSnapp.location }}</a>
       <p>{{ OneSnapp.date_created | date: '%d %B %Y %H:%M' | capitalize }}</p>
