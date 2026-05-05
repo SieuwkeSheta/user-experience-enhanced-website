@@ -230,10 +230,119 @@ app.get('/snapps/:uuid', async function (request, response) {
     OneSnapps: OneSnappApiResponseJSON.data,
     Likescounts: LikesCountApiResponseJSON.data,
     Tomatocounts: TomatoCountApiResponseJSON.data,
-    Starcounts: StarCountApiResponseJSON.data
+    Starcounts: StarCountApiResponseJSON.data,
+    status: request.query.status,
+    hasLike,
+    hasTomato,
+    hasStar
   })
 })
 
+// Maak een POST route voor likes, tomaten en sterren per snapp
+app.post('/snapps/:uuid/action', async function (request, response) {
+  // Haal de actie op die is uitgevoerd in het formulier (like, tomaat of ster)
+  const actionType = request.body.action
+
+  // Haal de snapp 'uuid' uit de url parameter
+  const snappUuid = request.params.uuid
+
+  // Persoon die de like, tomaat of ster geeft
+  const userUuid = "467a4442-69e4-44ae-829a-b95e25c4dd7b"
+
+  // Check of de actie van de 'ster' al bestaat op de snapp met de specifieke persoon
+  const starResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[action][_eq]=star&filter[snap][_eq]=${snappUuid}&filter[user][_eq]=${userUuid}`)
+  const starData = await starResponse.json()
+  const starAction = starData.data[0]
+
+  // Check of de andere acties, de like of tomaat, al bestaan op de snapp met de specifieke persoon
+  const likeOrTomatoResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[action][_neq]=star&filter[snap][_eq]=${snappUuid}&filter[user][_eq]=${userUuid}`)
+  const likeOrTomatoData = await likeOrTomatoResponse.json()
+  const likeOrTomatoAction = likeOrTomatoData.data[0]
+
+  try {
+
+    // Voor de actie van de 'ster'
+    if (actionType === "star") {
+      // Als de 'ster' actie bestaat, verwijder het als je er opnieuw op klikt
+      if (starAction) {
+        await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${starAction.uuid}`, {
+          method: "DELETE",
+        })
+
+        return response.redirect(303, `/snapps/${snappUuid}?status=star-removed`)
+
+        // Als de 'ster' actie nog niet bestaat, voeg het toe
+      } else {
+        await fetch("https://fdnd-agency.directus.app/items/snappthis_action", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            snap: snappUuid,
+            user: userUuid,
+            action: "star"
+          })
+        })
+
+        return response.redirect(303, `/snapps/${snappUuid}?status=star-added`)
+      }
+
+      // Voor de actie van de 'like' of de 'tomaat'
+    } else {
+      // Als er nog geen 'like' of 'tomaat' actie bestaat, voeg het toe
+      if (!likeOrTomatoAction) {
+        await fetch("https://fdnd-agency.directus.app/items/snappthis_action", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            snap: snappUuid,
+            user: userUuid,
+            action: actionType
+          })
+        })
+
+        return response.redirect(303, `/snapps/${snappUuid}?status=${actionType}-added`)
+
+        // Als er al een 'like' of 'tomaat' actie bestaat
+      } else {
+
+        // Als er al een 'like' of 'tomaat' actie bestaat, verwijder het als je er opnieuw op klikt
+        if (likeOrTomatoAction.action === actionType) {
+          await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${likeOrTomatoAction.uuid}`, {
+            method: "DELETE",
+          })
+
+          return response.redirect(303, `/snapps/${snappUuid}?status=${actionType}-removed`)
+
+          // Als er al een 'like' of 'tomaat' actie bestaat, switch de actie als je op de ander klikt
+        } else {
+          await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${likeOrTomatoAction.uuid}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              action: actionType
+            })
+          })
+
+          return response.redirect(303, `/snapps/${snappUuid}?status=switched-to-${actionType}`)
+        }
+      }
+    }
+    
+    // Als er iets mis gaat bij het POST'en, stuur een error
+  } catch (error) {
+    console.error(error)
+    return response.redirect(303, `/snapps/${snappUuid}?status=error`)
+  }
+})
 
 
 
