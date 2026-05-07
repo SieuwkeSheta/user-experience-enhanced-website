@@ -6,6 +6,10 @@
     <title>{{ title }}</title>
     
     <link rel="stylesheet" href="/styles/style.css">
+
+    <!-- type="module" is een feature detection
+      browsers die dat ondersteunen, ondersteunen ook fetch (en andere js methoden) 
+      https://snugug.com/musings/modern-cutting-the-mustard/ -->
     <script defer src="/scripts/client.js" type="module"></script>
   </head>
   <body> 
@@ -100,7 +104,7 @@
               </svg>
           </a>
         
-          <form action="/snapps/{% for OneSnapp in OneSnapps%}{{OneSnapp.uuid}}{% endfor %}/action" method="POST" class="like-dislike-save-form">
+          <form action="/snapps/{% for OneSnapp in OneSnappInfo%}{{OneSnapp.uuid}}{% endfor %}/action" method="POST" class="like-dislike-save-form" data-enhanced="actions">
               {% comment %} Like button {% endcomment %}
               <label class="{% if hasLike == true %}like-active{% endif %}">
                 <button type="submit" name="action" value="like">
