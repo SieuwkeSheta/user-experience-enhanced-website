@@ -39,7 +39,11 @@
     {% for snapps in sorted_snapps %}
         <li>
           <a href="/snapps/{{ snapps.uuid }}">
-            <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=500&" alt="" width="200">
+            <picture>
+              <source srcset="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=300&format=avif" type="image/avif" width="300">            
+              <source srcset="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=300&format=webp" type="image/webp" width="300">
+              <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ snapps.picture }}?width=300" alt="" width="300" height="auto">
+            </picture>
           </a>
           {% comment %} <form method="POST" action="/snapps/delete/{{ snapps.uuid }}">
             <input type="hidden" name="slug" value="{{ OneSnappMappInfo.slug}}">

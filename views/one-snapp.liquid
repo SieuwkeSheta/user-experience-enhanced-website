@@ -20,9 +20,12 @@
       </svg>
       {{ OneSnapp.snapmap.groups[0].snappthis_group_uuid.name }}
     </h2>
-
-    <img src="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=500" alt="" width="200">
-
+    <picture>
+      <source srcset="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=500&format=avif" type="image/avif" width="500">            
+      <source srcset="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=500&format=webp" type="image/webp" width="500">
+      <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=500" alt="" width="500" height="auto">
+    </picture>
+    
     <div>
       <a href="/snappmaps/{{OneSnapp.snapmap.slug}}">{{ OneSnapp.snapmap.name }}</a>
       <a href="#">{{ OneSnapp.author.name }}</a>
