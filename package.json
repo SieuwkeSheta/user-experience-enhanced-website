@@ -8,7 +8,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server-optimized.js"
   },
   "repository": {
     "type": "git",
