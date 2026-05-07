@@ -27,6 +27,15 @@
         <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 15.05C18.4178 15.05 15.91 17.5578 15.91 20.64C15.91 23.7222 18.4178 26.23 21.5 26.23C24.5823 26.23 27.09 23.7222 27.09 20.64C27.09 17.5578 24.5823 15.05 21.5 15.05ZM30.96 5.59C30.96 2.5026 28.4574 0 25.37 0H17.63C14.5426 0 12.04 2.5026 12.04 5.59H5.59C2.5026 5.59 0 8.0926 0 11.18V30.1C0 33.1874 2.5026 35.69 5.59 35.69H37.41C40.4974 35.69 43 33.1874 43 30.1V11.18C43 8.0926 40.4974 5.59 37.41 5.59H30.96ZM21.5 30.53C16.0463 30.53 11.61 26.0933 11.61 20.64C11.61 15.1868 16.0463 10.75 21.5 10.75C26.9537 10.75 31.39 15.1868 31.39 20.64C31.39 26.0933 26.9537 30.53 21.5 30.53Z" fill=""/>
       </svg>
     </a>
+    
+    {% comment %} How many hours untill the deadline is closed to take a snapp {% endcomment %}
+    {% comment %} {% assign target_date_seconds = OneSnappMappInfo.time_end | date: '%s' %}
+    {% assign today_date_seconds = 'now' | date: '%s' %}
+    {% assign difference_seconds = target_date_seconds | minus: today_date_seconds %}
+    {% assign hours_remaining = difference_seconds | divided_by: 3600 | round: 0 %} {% endcomment %}
+    {% comment %} 'modulo: 3600' verwijdert alle volledige uren en houdt alleen de overgebleven seconden over die geen heel uur vormen {% endcomment %}
+    {% comment %} {% assign minutes_remaining = difference_seconds | modulo: 3600 | divided_by: 60 | round: 0 %}
+    <p>{{ hours_remaining }}:{{ minutes_remaining }}</p> {% endcomment %}
 
     <p>01:30</p>
     <p class="active"><strong>Add your snapp!</strong></p>
