@@ -476,7 +476,7 @@ img {
 
 
     div {
-        padding: 0.1em 0.2em 1em;
+        padding: 0.1em 0.3em 1em;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -500,6 +500,7 @@ img {
         p {
             color: var(--text-color-on-light-bg);
             text-transform: capitalize;
+            padding: 0.2em 0.2em 0;
         }
     }
 

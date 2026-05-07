@@ -1,6 +1,6 @@
-{% render 'partials/head.liquid', title: 'Your groups', MultipleGroups: true %}
+{% render 'partials/head.liquid', title: 'Your groups', allGroups: true %}
 
-{% for OneGroup in MultipleGroupslist %}
+{% for OneGroup in allGroups %}
   <ul class="list">
     {% comment %} Make variable for the date of 'today' {% endcomment %}
     {% assign today_date = 'now' | date: '%Y%m%d' %}

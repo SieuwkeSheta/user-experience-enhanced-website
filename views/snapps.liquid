@@ -1,12 +1,12 @@
 {% render 'partials/head.liquid',
   title: 'Snapps',
-  MultipleSnapps: MultipleSnapps,
+  allSnapps: allSnapps,
   path: path,
   pathLocation: pathLocation
 %}
 
 
-{% assign sorted_snapps = MultipleSnapps | sort: "date_created" | reverse %}
+{% assign sorted_snapps = allSnapps | sort: "date_created" | reverse %}
 
 <ul class="snapp-grid">
   {% for OneSnapp in sorted_snapps %}
