@@ -58,13 +58,15 @@ app.get('/snappmaps/:slug', async function (request, response) {
   params.set('fields', '*.*,groups.snappthis_group_uuid.name,groups.snappthis_group_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.name,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.uuid')
   params.set('filter[slug]', request.params.slug)
 
-  const OneSnappMappInfoApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
-  const OneSnappMappInfoApiResponseJSON = await OneSnappMappInfoApiResponse.json()
-  const OneSnappMappInfos = OneSnappMappInfoApiResponseJSON.data
+  const oneSnappMappInfoApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
+  const oneSnappMappInfoApiResponseJSON = await oneSnappMappInfoApiResponse.json()
+  const oneSnappMappInfos = oneSnappMappInfoApiResponseJSON.data
+
+  console.log(oneSnappMappInfos)
 
   const status = request.query.status
 
-  response.render('one-snappmap.liquid', { OneSnappMappInfos, status })
+  response.render('one-snappmap.liquid', { oneSnappMappInfos, status })
 })
 
 app.get('/snappmaps/:slug/capture', async function (request, response) {
@@ -72,13 +74,13 @@ app.get('/snappmaps/:slug/capture', async function (request, response) {
   params.set('fields', 'name,slug,uuid')
   params.set('filter[slug]', request.params.slug)
 
-  const OneSnappMappApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
-  const OneSnappMappApiResponseJSON = await OneSnappMappApiResponse.json()
-  const OneSnappMapp = OneSnappMappApiResponseJSON.data[0]
+  const oneSnappMappApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
+  const oneSnappMappApiResponseJSON = await oneSnappMappApiResponse.json()
+  const oneSnappMapp = oneSnappMappApiResponseJSON.data[0]
 
   const status = request.query.status
 
-  response.render('capture-snapp.liquid', { OneSnappMapp, status })
+  response.render('capture-snapp.liquid', { oneSnappMapp, status })
 })
 
 app.post("/snappmaps/:slug", upload.single("file"), async (req, res) => {
@@ -165,9 +167,9 @@ app.get('/snapps/:uuid', async function (request, response) {
   params.set('fields', '*,snapmap.name,snapmap.uuid,snapmap.slug,snapmap.groups.snappthis_group_uuid.name,author.*')
   params.set('filter[uuid]', request.params.uuid)
 
-  const OneSnappApiResponse = await fetch(`${snappEndpoint}?${params.toString()}`)
-  const OneSnappApiResponseJSON = await OneSnappApiResponse.json()
-  const OneSnappInfo = OneSnappApiResponseJSON.data
+  const oneSnappApiResponse = await fetch(`${snappEndpoint}?${params.toString()}`)
+  const oneSnappApiResponseJSON = await oneSnappApiResponse.json()
+  const oneSnappInfo = oneSnappApiResponseJSON.data
 
   const paramsAction = new URLSearchParams()
   paramsAction.set('fields', '*,user.name,snap.*,snap.author.*,snap.snapmap.name,snap.snapmap.groups.snappthis_group_uuid.name')
@@ -197,7 +199,7 @@ app.get('/snapps/:uuid', async function (request, response) {
   const hasTomato = actions.some(a => a.action === "tomato")
   const hasStar = actions.some(a => a.action === "star")
 
-  response.render('one-snapp.liquid', { OneSnappInfo, likesCount, tomatoCount, starCount, hasLike, hasTomato, hasStar, status })
+  response.render('one-snapp.liquid', { oneSnappInfo, likesCount, tomatoCount, starCount, hasLike, hasTomato, hasStar, status })
 })
 
 app.post('/snapps/:uuid/action', async function (request, response) {

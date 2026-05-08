@@ -9,13 +9,13 @@
 {% assign sorted_snapps = allSnapps | sort: "date_created" | reverse %}
 
 <ul class="snapp-grid">
-  {% for OneSnapp in sorted_snapps %}
+  {% for oneSnapp in sorted_snapps %}
     <li>
-      <a href="/snapps/{{ OneSnapp.uuid }}">
+      <a href="/snapps/{{ oneSnapp.uuid }}">
         <picture>
-          <source srcset="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=300&format=avif" type="image/avif" width="300" height="auto">            
-          <source srcset="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=300&format=webp" type="image/webp" width="300" height="auto">
-          <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ OneSnapp.picture }}?width=300" alt="" width="300" height="auto">
+          <source srcset="https://fdnd-agency.directus.app/assets/{{ oneSnapp.picture }}?width=300&format=avif" type="image/avif" width="300" height="auto">            
+          <source srcset="https://fdnd-agency.directus.app/assets/{{ oneSnapp.picture }}?width=300&format=webp" type="image/webp" width="300" height="auto">
+          <img loading="lazy" src="https://fdnd-agency.directus.app/assets/{{ oneSnapp.picture }}?width=300" alt="" width="300" height="auto">
         </picture>
       </a>
     </li>

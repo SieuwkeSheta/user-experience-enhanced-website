@@ -1,29 +1,29 @@
 {% render 'partials/head.liquid', title: 'Your groups', allGroups: true %}
 
-{% for OneGroup in allGroups %}
+{% for oneGroup in allGroups %}
   <ul class="list">
     {% comment %} Make variable for the date of 'today' {% endcomment %}
     {% assign today_date = 'now' | date: '%Y%m%d' %}
 
     {% comment %} Make variable of the end-date of the 'snappmap' {% endcomment %}
     {% comment %} 'snappmap' has multiple items, hence the for-loop {% endcomment %}
-    {% for snappmap in OneGroup.snappmap %}
+    {% for snappmap in oneGroup.snappmap %}
       {% assign target_date = snappmap.snappthis_snapmap_uuid.time_end | date: '%Y%m%d' %}
     {% endfor %}
 
     {% comment %} If the end-date of the 'snapmap' has not yet ended before the date of 'today', make the name bold {% endcomment %}
     {% if target_date > today_date %}
       <li>
-        <a href="/groups/{{ OneGroup.slug }}" class="link-in-list" style="font-family: 'Bariol-Bold';">
-          {{- OneGroup.name -}}
+        <a href="/groups/{{ oneGroup.slug }}" class="link-in-list" style="font-family: 'Bariol-Bold';">
+          {{ oneGroup.name }}
         </a>
       </li>
       <li class="active"><strong>Add your snapp!</strong></li>
     {% else %}
       <li>
-        <a href="/groups/{{ OneGroup.slug }}" class="link-in-list">{{ OneGroup.name }}</a>
+        <a href="/groups/{{ oneGroup.slug }}" class="link-in-list">{{ oneGroup.name }}</a>
       </li>
-      <li class="members-count">{{ OneGroup.users_count }} members</li>
+      <li class="members-count">{{ oneGroup.users_count }} members</li>
     {% endif %}
 
     {% comment %} Add user & add snappmap buttons {% endcomment %}

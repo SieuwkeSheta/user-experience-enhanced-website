@@ -2,19 +2,19 @@
 
 {% comment %} {{ MultipleSnappMapslist | json }} {% endcomment %}
 
-{% for OneSnappMap in allSnappMaps %}
+{% for oneSnappMap in allSnappMaps %}
   {% comment %} Make variable for the date of 'today' {% endcomment %}
   {% assign today_date = 'now' | date: '%Y%m%d' %}
 
   {% comment %} Make variable of the end-date of the 'snappmap' {% endcomment %}
-  {% assign target_date = OneSnappMap.time_end | date: '%Y%m%d' %}
+  {% assign target_date = oneSnappMap.time_end | date: '%Y%m%d' %}
 
   <ul class="list">
     {% if target_date > today_date %}
       {% comment %} If the end-date of one of the 'snappmaps' has not yet ended before the date of 'today', make the name bold {% endcomment %}
       <li>
-        <a href="/snappmaps/{{ OneSnappMap.slug }}" class="link-in-list" style="font-family: 'Bariol-Bold';">
-          {{ OneSnappMap.name }}
+        <a href="/snappmaps/{{ oneSnappMap.slug }}" class="link-in-list" style="font-family: 'Bariol-Bold';">
+          {{ oneSnappMap.name }}
         </a>
       </li>
 
@@ -22,9 +22,9 @@
       <li class="active"><strong>Add your snapp!</strong></li>
     {% else %}
       <li>
-        <a href="/snappmaps/{{ OneSnappMap.slug }}" class="link-in-list">{{ OneSnappMap.name }}</a>
+        <a href="/snappmaps/{{ oneSnappMap.slug }}" class="link-in-list">{{ oneSnappMap.name }}</a>
       </li>
-      <li>{{ OneSnappMap.time_end | date: '%a %d %b %H:%M' | capitalize }}</li>
+      <li>{{ oneSnappMap.time_end | date: '%a %d %b %H:%M' | capitalize }}</li>
     {% endif %}
   </ul>
 {% endfor %}

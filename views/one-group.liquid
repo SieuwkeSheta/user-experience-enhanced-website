@@ -1,12 +1,12 @@
-{% for OneSnappMap in snappMapslist %}
-    {% render 'partials/head.liquid',  title: OneSnappMap.name, OneGroup: true, OneSnappMap: OneSnappMap%}
+{% for oneSnappMap in snappMapslist %}
+    {% render 'partials/head.liquid',  title: oneSnappMap.name, oneGroup: true, oneSnappMap: oneSnappMap%}
 {% endfor %}
 
-{% for OneSnappMap in snappMapslist %}
+{% for oneSnappMap in snappMapslist %}
     {% comment %} Make variable for the date of 'today' {% endcomment %}
     {% assign today_date = 'now' | date: '%Y%m%d' %}
 
-    {% for snappmap in OneSnappMap.snappmap %}
+    {% for snappmap in oneSnappMap.snappmap %}
         {% comment %} Make variable of the end-date of the 'snappmap' {% endcomment %}
         {% assign target_date = snappmap.snappthis_snapmap_uuid.time_end | date: '%Y%m%d'%}
 
