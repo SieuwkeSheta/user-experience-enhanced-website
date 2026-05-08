@@ -11,49 +11,74 @@ app.use(express.static('public'))
 app.engine('liquid', engine.express())
 app.set('views', './views')
 
+const baseURL = 'https://fdnd-agency.directus.app/items'
+const groupEndpoint = `${baseURL}/snappthis_group`
+const snappmapEndpoint = `${baseURL}/snappthis_snapmap`
+const snappEndpoint = `${baseURL}/snappthis_snap`
+const actionEndpoint = `${baseURL}/snappthis_action`
+const userEndpoint = `${baseURL}/snappthis_user`
+
 app.get('/', async function (request, response) {
   response.render('index.liquid')
 })
 
 app.get('/groups', async function (request, response) {
-  const MultipleGroupslistapiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_group?fields=name,slug,snappmap.snappthis_snapmap_uuid.*&fields=count(users)')
-  const MultipleGroupslistapiResponseJSON = await MultipleGroupslistapiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', 'name,slug,snappmap.snappthis_snapmap_uuid.*,count(users)')
 
-  response.render('groups.liquid', { MultipleGroupslist: MultipleGroupslistapiResponseJSON.data })
+  const allGroupsapiResponse = await fetch(`${groupEndpoint}?${params.toString()}`)
+  const allGroupsapiResponseJSON = await allGroupsapiResponse.json()
+  const allGroups = allGroupsapiResponseJSON.data
+
+  response.render('groups.liquid', { allGroups })
 })
 
 app.get('/groups/:slug', async function (request, response) {
-  const snappMapsapiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_group/?fields=*.*,snappmap.snappthis_snapmap_uuid.*&filter[slug]=' + request.params.slug)
-  const snappMapsapiResponseJSON = await snappMapsapiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', '*.*,snappmap.snappthis_snapmap_uuid.*')
+  params.set('filter[slug]', request.params.slug)
 
-  response.render('one-group.liquid', { SnappMapslist: snappMapsapiResponseJSON.data })
+  const snappMapsapiResponse = await fetch(`${groupEndpoint}?${params.toString()}`)
+  const snappMapsapiResponseJSON = await snappMapsapiResponse.json()
+  const snappMapslist = snappMapsapiResponseJSON.data
+
+  response.render('one-group.liquid', { snappMapslist })
 })
 
 app.get('/snappmaps', async function (request, response) {
-  const MultipleSnappMapslistApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snapmap')
-  const MultipleSnappMapslistApiResponseJSON = await MultipleSnappMapslistApiResponse.json()
+  const allSnappMapsApiResponse = await fetch(`${snappmapEndpoint}`)
+  const allSnappMapsApiResponseJSON = await allSnappMapsApiResponse.json()
+  const allSnappMaps = allSnappMapsApiResponseJSON.data
 
-  response.render('snappmaps.liquid', { MultipleSnappMapslist: MultipleSnappMapslistApiResponseJSON.data })
+  response.render('snappmaps.liquid', { allSnappMaps  })
 })
 
 app.get('/snappmaps/:slug', async function (request, response) {
-  const OneSnappMappInfoApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snapmap?fields=*.*,groups.snappthis_group_uuid.name,groups.snappthis_group_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.name,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.uuid&filter[slug]=' + request.params.slug)
-  const OneSnappMappInfoApiResponseJSON = await OneSnappMappInfoApiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', '*.*,groups.snappthis_group_uuid.name,groups.snappthis_group_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.name,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.slug,groups.snappthis_group_uuid.snappmap.snappthis_snapmap_uuid.uuid')
+  params.set('filter[slug]', request.params.slug)
 
-  response.render('one-snappmap.liquid', {
-    OneSnappMappInfos: OneSnappMappInfoApiResponseJSON.data, 
-    status: request.query.status,
-  })
+  const oneSnappMappInfoApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
+  const oneSnappMappInfoApiResponseJSON = await oneSnappMappInfoApiResponse.json()
+  const oneSnappMappInfos = oneSnappMappInfoApiResponseJSON.data
+
+  const status = request.query.status
+
+  response.render('one-snappmap.liquid', { oneSnappMappInfos, status })
 })
 
 app.get('/snappmaps/:slug/capture', async function (request, response) {
-  const OneSnappMappNameApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snapmap?fields=name,slug,uuid&filter[slug]=' + request.params.slug)
-  const OneSnappMappNameApiResponseJSON = await OneSnappMappNameApiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', 'name,slug,uuid')
+  params.set('filter[slug]', request.params.slug)
 
-  response.render('capture-snapp.liquid', {
-    OneSnappMappNames: OneSnappMappNameApiResponseJSON.data,
-    status: request.query.status
-  })
+  const oneSnappMappApiResponse = await fetch(`${snappmapEndpoint}?${params.toString()}`)
+  const oneSnappMappApiResponseJSON = await oneSnappMappApiResponse.json()
+  const oneSnappMapp = oneSnappMappApiResponseJSON.data[0]
+
+  const status = request.query.status
+
+  response.render('capture-snapp.liquid', { oneSnappMapp, status })
 })
 
 app.post("/snappmaps/:slug", upload.single("file"), async (req, res) => {
@@ -83,7 +108,7 @@ app.post("/snappmaps/:slug", upload.single("file"), async (req, res) => {
     picture: imageId,
   };
 
-  const snapResponse = await fetch("https://fdnd-agency.directus.app/items/snappthis_snap", {
+  const snapResponse = await fetch(`${snappEndpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -99,10 +124,17 @@ app.post("/snappmaps/:slug", upload.single("file"), async (req, res) => {
 })
 
 app.get('/snapps', async function (request, response) {
-  const MultipleSnappsApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.groups.snappthis_group_uuid.name&filter[picture][_neq]=null')
-  const MultipleSnappsApiResponseJSON = await MultipleSnappsApiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', '*,snapmap.groups.snappthis_group_uuid.name')
+  params.set('filter[picture][_neq]', 'null')
 
-  response.render('snapps.liquid', { MultipleSnapps: MultipleSnappsApiResponseJSON.data, path: request.path })
+  const allSnappsApiResponse = await fetch(`${snappEndpoint}?${params.toString()}`)
+  const allSnappsApiResponseJSON = await allSnappsApiResponse.json()
+  const allSnapps = allSnappsApiResponseJSON.data
+
+  const path = request.path
+
+  response.render('snapps.liquid', { allSnapps, path })
 })
 
 app.get('/snapps/location', async function (request, response) {
@@ -111,28 +143,53 @@ app.get('/snapps/location', async function (request, response) {
 })
 
 app.get('/snapps/location/:location', async function (request, response) {
-  const MultipleSnappsApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.groups.snappthis_group_uuid.name&filter[picture][_neq]=null&filter[location]=' + request.params.location)
-  const MultipleSnappsApiResponseJSON = await MultipleSnappsApiResponse.json()
+  const params = new URLSearchParams()
+  params.set('fields', '*,snapmap.groups.snappthis_group_uuid.name')
+  params.set('filter[picture][_neq]', 'null')
+  params.set('filter[location]', request.params.location)
 
-  response.render('snapps.liquid', { MultipleSnapps: MultipleSnappsApiResponseJSON.data, pathLocation: request.path })
+  const allSnappsApiResponse = await fetch(`${snappEndpoint}?${params.toString()}`)
+  const allSnappsApiResponseJSON = await allSnappsApiResponse.json()
+  const allSnapps = allSnappsApiResponseJSON.data
+
+  const pathLocation = request.path
+
+  response.render('snapps.liquid', { allSnapps, pathLocation })
 })
 
 app.get('/snapps/:uuid', async function (request, response) {
-  const OneSnappApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.name,snapmap.uuid,snapmap.slug,snapmap.groups.snappthis_group_uuid.name,author.*&filter[uuid]=' + request.params.uuid)
-  const OneSnappApiResponseJSON = await OneSnappApiResponse.json()
-
-  const LikesCountApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.name,snapmap.groups.snappthis_group_uuid.name,author.*,actions.action,actions.user.name&deep[actions][_filter][action][_eq]=like&filter[uuid]=' + request.params.uuid)
-  const LikesCountApiResponseJSON = await LikesCountApiResponse.json()
-
-  const TomatoCountApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.name,snapmap.groups.snappthis_group_uuid.name,author.*,actions.action&deep[actions][_filter][action][_eq]=tomato&filter[uuid]=' + request.params.uuid)
-  const TomatoCountApiResponseJSON = await TomatoCountApiResponse.json()
-
-  const StarCountApiResponse = await fetch('https://fdnd-agency.directus.app/items/snappthis_snap?fields=*,snapmap.name,snapmap.groups.snappthis_group_uuid.name,author.*,actions.action&deep[actions][_filter][action][_eq]=star&filter[uuid]=' + request.params.uuid)
-  const StarCountApiResponseJSON = await StarCountApiResponse.json()
-
   const userUuid = "467a4442-69e4-44ae-829a-b95e25c4dd7b"
+  const status = request.query.status
 
-  const userActionResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[snap][_eq]=${request.params.uuid}&filter[user][_eq]=${userUuid}`)
+  const params = new URLSearchParams()
+  params.set('fields', '*,snapmap.name,snapmap.uuid,snapmap.slug,snapmap.groups.snappthis_group_uuid.name,author.*')
+  params.set('filter[uuid]', request.params.uuid)
+
+  const oneSnappApiResponse = await fetch(`${snappEndpoint}?${params.toString()}`)
+  const oneSnappApiResponseJSON = await oneSnappApiResponse.json()
+  const oneSnappInfo = oneSnappApiResponseJSON.data
+
+  const paramsAction = new URLSearchParams()
+  paramsAction.set('fields', '*,user.name,snap.*,snap.author.*,snap.snapmap.name,snap.snapmap.groups.snappthis_group_uuid.name')
+  paramsAction.set('filter[snap]', request.params.uuid)
+
+  const likesCountApiResponse = await fetch(`${actionEndpoint}?${paramsAction.toString()}&filter[action]=like`)
+  const likesCountApiResponseJSON = await likesCountApiResponse.json()
+  const likesCount =  likesCountApiResponseJSON.data
+
+  const tomatoCountApiResponse = await fetch(`${actionEndpoint}?${paramsAction.toString()}&filter[action]=tomato`)
+  const tomatoCountApiResponseJSON = await tomatoCountApiResponse.json()
+  const tomatoCount = tomatoCountApiResponseJSON.data
+
+  const starCountApiResponse = await fetch(`${actionEndpoint}?${paramsAction.toString()}&filter[action]=star`)
+  const starCountApiResponseJSON = await starCountApiResponse.json()
+  const starCount = starCountApiResponseJSON.data
+
+  const paramsUserActionState = new URLSearchParams()
+  paramsUserActionState.set('filter[user][_eq]', `${userUuid}`)
+  paramsUserActionState.set('filter[snap][_eq]', request.params.uuid)
+
+  const userActionResponse = await fetch(`${actionEndpoint}?${paramsUserActionState.toString()}`)
   const userActionData = await userActionResponse.json()
 
   const actions = userActionData.data || []
@@ -140,16 +197,7 @@ app.get('/snapps/:uuid', async function (request, response) {
   const hasTomato = actions.some(a => a.action === "tomato")
   const hasStar = actions.some(a => a.action === "star")
 
-  response.render('one-snapp.liquid', {
-    OneSnapps: OneSnappApiResponseJSON.data,
-    Likescounts: LikesCountApiResponseJSON.data,
-    Tomatocounts: TomatoCountApiResponseJSON.data,
-    Starcounts: StarCountApiResponseJSON.data,
-    status: request.query.status,
-    hasLike,
-    hasTomato,
-    hasStar
-  })
+  response.render('one-snapp.liquid', { oneSnappInfo, likesCount, tomatoCount, starCount, hasLike, hasTomato, hasStar, status })
 })
 
 app.post('/snapps/:uuid/action', async function (request, response) {
@@ -157,25 +205,29 @@ app.post('/snapps/:uuid/action', async function (request, response) {
   const snappUuid = request.params.uuid
   const userUuid = "467a4442-69e4-44ae-829a-b95e25c4dd7b"
 
-  const starResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[action][_eq]=star&filter[snap][_eq]=${snappUuid}&filter[user][_eq]=${userUuid}`)
+  const params = new URLSearchParams()
+  params.set('filter[snap][_eq]', `${snappUuid}`)
+  params.set('filter[user][_eq]', `${userUuid}`)
+
+  const starResponse = await fetch(`${actionEndpoint}?${params.toString()}&filter[action][_eq]=star`)
   const starData = await starResponse.json()
   const starAction = starData.data[0]
 
-  const likeOrTomatoResponse = await fetch(`https://fdnd-agency.directus.app/items/snappthis_action?filter[action][_neq]=star&filter[snap][_eq]=${snappUuid}&filter[user][_eq]=${userUuid}`)
+  const likeOrTomatoResponse = await fetch(`${actionEndpoint}?${params.toString()}&filter[action][_neq]=star`)
   const likeOrTomatoData = await likeOrTomatoResponse.json()
   const likeOrTomatoAction = likeOrTomatoData.data[0]
 
   try {
     if (actionType === "star") {
       if (starAction) {
-        await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${starAction.uuid}`, {
+        await fetch(`${actionEndpoint}/${starAction.uuid}`, {
           method: "DELETE",
         })
 
         return response.redirect(303, `/snapps/${snappUuid}?status=star-removed`)
 
       } else {
-        await fetch("https://fdnd-agency.directus.app/items/snappthis_action", {
+        await fetch(`${actionEndpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -193,7 +245,7 @@ app.post('/snapps/:uuid/action', async function (request, response) {
 
     } else {
       if (!likeOrTomatoAction) {
-        await fetch("https://fdnd-agency.directus.app/items/snappthis_action", {
+        await fetch(`${actionEndpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -211,14 +263,14 @@ app.post('/snapps/:uuid/action', async function (request, response) {
       } else {
 
         if (likeOrTomatoAction.action === actionType) {
-          await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${likeOrTomatoAction.uuid}`, {
+          await fetch(`${actionEndpoint}/${likeOrTomatoAction.uuid}`, {
             method: "DELETE",
           })
 
           return response.redirect(303, `/snapps/${snappUuid}?status=${actionType}-removed`)
 
         } else {
-          await fetch(`https://fdnd-agency.directus.app/items/snappthis_action/${likeOrTomatoAction.uuid}`, {
+          await fetch(`${actionEndpoint}/${likeOrTomatoAction.uuid}`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json"
@@ -244,7 +296,7 @@ app.post("/snapps/delete/:uuid", async (req, res) => {
   const snappUuid = req.params.uuid
   const snappMappSlug = req.body.slug
 
-  await fetch(`https://fdnd-agency.directus.app/items/snappthis_snap/${snappUuid}`, {
+  await fetch(`${snappEndpoint}/${snappUuid}`, {
     method: "DELETE",
   })
 
