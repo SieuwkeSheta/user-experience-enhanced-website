@@ -2,7 +2,7 @@
   "name": "user-experience-enhanced-website",
   "version": "1.0.0",
   "description": "Ontwerp en maak een website voor een opdrachtgever waarbij je de website verrijkt volgens het principe van progressive enhancement.",
-  "main": "server.js",
+  "main": "server-optimized.js",
   "type": "module",
   "directories": {
     "doc": "docs"
