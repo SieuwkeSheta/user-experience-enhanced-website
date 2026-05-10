@@ -41,7 +41,7 @@ Als gebruiker wil je kunnen liken of tomaten geven, daarnaast een ster kunnen ge
 
 >_[Wireflow](https://github.com/SieuwkeSheta/user-experience-enhanced-website/issues/15) van de client side JS 'like'-loading state_
 
-<br>De interactie van het liken, disliken en favorites toevoegen is geïmplementeerd. De UI 'loading state' is nog in ontwikkeling.
+<br>De interactie van het liken, disliken en favorites toevoegen is geïmplementeerd. De client side JS UI 'loading state' is nog in ontwikkeling.
 <br>
 
 https://github.com/user-attachments/assets/307a7317-a1a6-476a-96a9-cd7da3c23d96
