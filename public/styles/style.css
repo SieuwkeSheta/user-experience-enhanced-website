@@ -187,6 +187,7 @@ header {
 
     .like-active {
         color: var(--accent-color-on-dark-bg);
+
         svg {
             fill: var(--accent-color-on-dark-bg);
         }
@@ -202,6 +203,7 @@ header {
 
     .star-active {
         color: var(--star-icon-color);
+
         svg {
             fill: var(--star-icon-color);
         }
@@ -232,15 +234,17 @@ header {
 }
 
 @keyframes --fade-popup {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 /* colors in pop-up */
@@ -524,48 +528,68 @@ img {
 
     form {
         display: grid;
-        grid-template-columns: 1fr max-content 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         text-align: center;
         align-items: end;
-        padding: 0.5em;
+        padding: 0.5em 2.5em;
 
         /* Label and input to make a picture in snappmap */
         .upload-snap {
             cursor: pointer;
             grid-column: 2;
+            fill: white;
+        }
 
-            &:focus-within {
-                outline: 2px solid darkblue;
-            }
+        /* Make the input visually hidden but keep it focusable */
+        input[id="upload-snapp"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
 
-            input[id="upload-snapp"] {
-                position: absolute;
-                width: 1px;
-                height: 1px;
-                padding: 0;
-                overflow: hidden;
-                clip: rect(0, 0, 0, 0);
-                white-space: nowrap;
-                clip-path: inset(50%);
-                border: 0;
-            }
+        /* Focusable color */
+        #upload-snapp:focus+.upload-snap,
+        #upload-snapp:focus+.redo-button {
+            outline: 2px solid darkblue;
+        }
 
-            svg {
-                fill: white;
+
+        .redo-button {
+            cursor: pointer;
+            background-color: #949494;
+            fill: var(--lightest-color);
+            padding: 1em 1em 0.75em;
+            border-radius: 50%;
+            width: fit-content;
+            font-size: 1.22em;
+
+            &:hover {
+                transition: 0.2s;
+                scale: 1.1;
             }
         }
 
         /* Submit button */
         button {
             cursor: pointer;
+            grid-column: 3;
             justify-self: end;
             width: fit-content;
             height: fit-content;
-            padding: 1em 1.5em;
-            border-radius: 2em;
+            padding: 0.8em 0.75em;
+            border-radius: 50%;
             border: none;
-            background: none;
-            fill: var(--dark-text-color-on-light-bg);
+            background: var(--accent-color-on-light-bg);
+            color: var(--lightest-color);
+            font-family: 'Bariol-Bold';
+            font-size: 1.6em;
 
             &:hover,
             &:focus {
@@ -578,8 +602,20 @@ img {
         .display {
             display: inline-block;
         }
+
+        .hiding {
+            display: none;
+        }
+
+        .is-hidden {
+            display: none;
+        }
     }
 }
+
+
+
+
 
 /* Succes and error state - one-snappmap.liquid and capture-snapp.liquid */
 .status-succes-or-error {
