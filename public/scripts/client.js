@@ -3,6 +3,8 @@
 const imageInputSelector = document.getElementById("upload-snapp")
 const imagePreview = document.getElementById("display-image")
 const sendButton = document.getElementById("send-button")
+const redoButton = document.querySelector(".redo-button")
+const captureButton = document.querySelector(".capture-button")
 
 // 2.logic
 // Als er een element is met 'imageInputSelector'
@@ -10,6 +12,13 @@ if (imageInputSelector) {
   // Wacht tot input veranderd
   imageInputSelector.addEventListener('change', handleImageUpload)
 }
+
+// Als er een element is met 'redoButton'
+if (redoButton) {
+  // Wacht tot er op een toets wordt geklikt, zodat je dit label kan linken en klikbaar kan maken met de input
+  redoButton.addEventListener('keydown', enterOnLabel)
+}
+
 
 // 3. function declarations
 function handleImageUpload(event) {
@@ -33,9 +42,23 @@ function handleImageUpload(event) {
 
     // Voeg een class toe aan de submit button om het zichtbaar te maken
     sendButton.classList.add("display")
+    captureButton.classList.add("hiding")
+    redoButton.classList.remove("is-hidden")
   }
 
 }
+
+function enterOnLabel(clickedKey) {
+  // Check op welke toets er geklikt is, als het "Enter" is kun je de functie uitvoeren
+  if (clickedKey.key === "Enter") {
+
+    clickedKey.preventDefault()
+
+    // '.click' simuleert een muis klik
+    imageInputSelector.click()
+  }
+}
+
 
 
 
@@ -67,7 +90,7 @@ document.addEventListener("submit", async function (event) {
     clickedButton.textContent = "loading..."
   }
 
-  buttons.forEach(function(btn){
+  buttons.forEach(function(btn) {
     btn.disabled = true
   })
 
@@ -132,10 +155,10 @@ document.addEventListener("submit", async function (event) {
   updatedButtons.forEach(loading)
 
   // 3. function declarations
- function loading (btn) {
+  function loading(btn) {
     btn.disabled = false
     btn.classList.remove("loading")
- }
+  }
 })
 
 
